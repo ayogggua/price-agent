@@ -1,6 +1,6 @@
 services:
   app:
-    image: price-agent:20261118-brand
+    image: price-agent:20261118-oss
     build: .
     restart: unless-stopped
     ports:
@@ -8,8 +8,10 @@ services:
     environment:
       HOST: 0.0.0.0
       PORT: 4312
-      APP_BASE_PATH: /price-agent
-      COOKIE_SECURE: "true"
+      APP_BASE_PATH: ${APP_BASE_PATH:-/price-agent}
+      APP_BRAND_NAME: ${APP_BRAND_NAME:-报价工作台}
+      DEFAULT_COMPANY_NAME: ${DEFAULT_COMPANY_NAME:-}
+      COOKIE_SECURE: ${COOKIE_SECURE:-auto}
       TRUST_PROXY: "1"
       DB_HOST: db
       DB_PORT: 3306
@@ -19,8 +21,18 @@ services:
       VERTEX_BASE_URL: ${VERTEX_BASE_URL}
       VERTEX_API_KEY: ${VERTEX_API_KEY}
       VERTEX_MODEL: ${VERTEX_MODEL}
+      AI_BASE_URL: ${AI_BASE_URL:-}
+      AI_API_KEY: ${AI_API_KEY:-}
+      AI_MODEL: ${AI_MODEL:-}
+      VERTEX_THINKING_LEVEL: ${VERTEX_THINKING_LEVEL:-AUTO}
+      VERTEX_ENABLE_SEARCH: ${VERTEX_ENABLE_SEARCH:-true}
+      VERTEX_ENABLE_URL_CONTEXT: ${VERTEX_ENABLE_URL_CONTEXT:-true}
+      AI_MAX_TOKENS: ${AI_MAX_TOKENS:-}
+      AI_TIMEOUT_MS: ${AI_TIMEOUT_MS:-240000}
+      SEARCH_PROVIDER: ${SEARCH_PROVIDER:-auto}
       TAVILY_API_KEY: ${TAVILY_API_KEY:-}
       SERPER_API_KEY: ${SERPER_API_KEY:-}
+      SEARXNG_BASE_URL: ${SEARXNG_BASE_URL:-}
     volumes:
       - price_agent_uploads:/app/.local/uploads
     depends_on:
