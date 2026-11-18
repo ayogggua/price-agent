@@ -1,0 +1,22 @@
+services:
+  db:
+    image: mysql:8.4
+    container_name: price-agent-mysql
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3397:3306"
+    environment:
+      MYSQL_DATABASE: price_agent
+      MYSQL_USER: price_agent
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - price_agent_data:/var/lib/mysql
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+volumes:
+  price_agent_data:

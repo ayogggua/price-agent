@@ -1,0 +1,19 @@
+{
+  "type": "design",
+  "designSystems": [],
+  "primaryDesignSystem": null,
+  "assets": {
+    "报价信息输入页": {
+      "versions": [
+        {
+          "path": "index.html",
+          "createdAt": "2026-11-17T09:23:31.704Z",
+          "status": "needs-review",
+          "subtitle": "自定义业务、交付成果、预算未知与必填信息"
+        }
+      ]
+    }
+  },
+  "createdAt": "2026-11-17T09:23:31.708Z",
+  "updatedAt": "2026-11-17T09:50:03.635Z"
+}

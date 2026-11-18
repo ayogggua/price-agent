@@ -1,0 +1,58 @@
+services:
+  app:
+    image: price-agent:20261118-brand
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:4322:4312"
+    environment:
+      HOST: 0.0.0.0
+      PORT: 4312
+      APP_BASE_PATH: /price-agent
+      COOKIE_SECURE: "true"
+      TRUST_PROXY: "1"
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: price_agent
+      DB_USER: price_agent
+      DB_PASSWORD: ${DB_PASSWORD}
+      VERTEX_BASE_URL: ${VERTEX_BASE_URL}
+      VERTEX_API_KEY: ${VERTEX_API_KEY}
+      VERTEX_MODEL: ${VERTEX_MODEL}
+      TAVILY_API_KEY: ${TAVILY_API_KEY:-}
+      SERPER_API_KEY: ${SERPER_API_KEY:-}
+    volumes:
+      - price_agent_uploads:/app/.local/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4312/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    mem_limit: 1g
+    logging:
+      options: {max-size: "10m", max-file: "3"}
+  db:
+    image: public.ecr.aws/docker/library/mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: price_agent
+      MYSQL_USER: price_agent
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - price_agent_data:/var/lib/mysql
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
+      interval: 5s
+      timeout: 5s
+      retries: 25
+    mem_limit: 1g
+    logging:
+      options: {max-size: "10m", max-file: "3"}
+volumes:
+  price_agent_data:
+  price_agent_uploads:

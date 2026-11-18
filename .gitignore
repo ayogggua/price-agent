@@ -1,0 +1,9 @@
+node_modules/
+client/build/
+.env
+.env.*
+!.env.example
+.local/
+uploads/
+.DS_Store
+npm-debug.log*
